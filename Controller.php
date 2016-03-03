@@ -2,17 +2,23 @@
 	include 'ReviewModel.php';
 	include 'WeatherModel.php';
 	Class Controller{
+
 		public function getReview($id){
 			$models = new ReviewModel;
 			$topics = $models->getAllReview();
 			$result = array();
-			foreach ($topics as $topic) {
-				if($topic->{'id'} === $id){
-					return $topic;
+			if (is_array($topics) || is_object($topics))
+			{
+				foreach ($topics['rows'] as $topic) {
+					$field = $topic['doc'];
+					if($field['_id'] === $id){
+						return $topic;
+					}
 				}
 			}
 			return null;
 		}
+
 		public function getTopic(){
 			$models = new ReviewModel;
 			$topics = $models->getAllReview();
@@ -27,6 +33,7 @@
 				return json_encode($result);
 			}
 		}
+		
 		public function getWeater($la,$lo,$date,$tag){
 			$weatherModel = new WeatherModel;
 			$json = file_get_contents('https://ad46647d-1b77-4644-b8c6-78eed562b7a3:NAgf7Zkmlo@twcservice.au-syd.mybluemix.net:443/api/weather/v2/forecast/daily/10day?units=m&geocode=45.42%2C75.69&language=en-US');
