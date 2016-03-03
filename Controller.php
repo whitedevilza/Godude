@@ -1,8 +1,9 @@
 <?php
-	include 'Model.php';
+	include 'ReviewModel.php';
+	include 'WeatherModel.php';
 	Class Controller{
 		public function getReview($id){
-			$models = new Model;
+			$models = new ReviewModel;
 			$topics = $models->getAllReview();
 			$result = array();
 			foreach ($topics as $topic) {
@@ -13,7 +14,7 @@
 			return null;
 		}
 		public function getTopic(){
-			$models = new Model;
+			$models = new ReviewModel;
 			$topics = $models->getAllReview();
 			$result = array();
 			if (is_array($topics) || is_object($topics))
@@ -27,6 +28,7 @@
 			}
 		}
 		public function getWeater($la,$lo,$date,$tag){
+			$weatherModel = new WeatherModel;
 			$json = file_get_contents('https://ad46647d-1b77-4644-b8c6-78eed562b7a3:NAgf7Zkmlo@twcservice.au-syd.mybluemix.net:443/api/weather/v2/forecast/daily/10day?units=m&geocode=45.42%2C75.69&language=en-US');
 			$obj = json_decode($json);
 			$rain_day = array();
@@ -69,11 +71,13 @@
 			}
 			//calculate prop
 			//day
-			
+			$weatherModel->getWeatherByKeys($tag,"day",$weather);
+			//night
+			$weatherModel->getWeatherByKeys($tag,"night",$weather);
 		}
 
 		public function insertReview(){
-			$models = new Model;
+			$models = new ReviewModel;
 			if ($_POST != null) {
 			  $image = $_POST["image"];
 			  $topic = $_POST["topic"];
