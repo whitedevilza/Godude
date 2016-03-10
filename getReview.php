@@ -1,13 +1,9 @@
-
 <!DOCTYPE html>
-
 <?php
 include 'Controller.php';
-$con = new Controller;
-$s = $con->getTopic();
-$arr = json_decode($s, true);
+$controller = new Controller;
 $id = $_GET['id'];
-$topic = $arr[$id];
+$review = $controller->getReview($id);
 ?>
 <!--[if IE 9]>
 <html lang="en" class="ie9"> <![endif]-->
@@ -16,7 +12,7 @@ $topic = $arr[$id];
 <!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    <title><?php echo $topic[2]; ?></title>
+    <title><?php echo $review['topic']; ?></title>
 
     <meta name="description" content="Worthy a Bootstrap-based, Responsive HTML5 Template">
     <meta name="author" content="htmlcoder.me">
@@ -68,49 +64,32 @@ $topic = $arr[$id];
 
     .col-md-10 {
         -webkit-border-radius: 25px;
-        margin-top: -90px;
+        margin-top: 0px;
         z-index: 2;
     }
 
-    .row > .col-md-3 > .whether {
-        margin-top: 100px;
-        margin-left: 25px;
-    }
-
-    .row > .col-md-3 > h2 {
-
-        margin-left: 65px;
-    }
+    
 </style>
 
 <body class="no-trans">
 <!-- scrollToTop -->
-<!-- ================ -->
 <div class="scrollToTop"><i class="icon-up-open-big"></i></div>
-
 <!-- header start -->
-<!-- ================ -->
-<header class="header fixed clearfix navbar navbar-fixed-top">
+<header class="header fixed clearfix navbar navbar-fixed-top" style="background-color: black">
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-
                 <!-- header-left start -->
-                <!-- ================ -->
                 <div class="header-left clearfix">
-
                     <!-- logo -->
-
                     <div class="logo smooth-scroll">
                         <a href="index.html"><img id="logo" src="images/favicon.ico" alt="Worthy"></a>
                     </div>
 
                     <div class="site-name-and-slogan smooth-scroll">
                         <div class="site-name"><a href="index.html">GoDude</a></div>
-<!--                        &lt;!&ndash;<div class="site-slogan">Free Bootstrap Theme by <a target="_blank" href="http://htmlcoder.me">HtmlCoder</a></div>&ndash;&gt;-->
+                        <!--                        &lt;!&ndash;<div class="site-slogan">Free Bootstrap Theme by <a target="_blank" href="http://htmlcoder.me">HtmlCoder</a></div>&ndash;&gt;-->
                     </div>
-
-
 
 
                 </div>
@@ -147,7 +126,7 @@ $topic = $arr[$id];
                                 <div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
                                     <ul class="nav navbar-nav navbar-right">
                                         <li><a href="index.html">Home</a></li>
-                                        <li><a href="TestAll.php">Review</a></li>
+                                        <li><a href="Topic.php">Review</a></li>
                                     </ul>
                                 </div>
 
@@ -166,55 +145,129 @@ $topic = $arr[$id];
     </div>
 </header>
 <!-- header end -->
-
-
 <div class="container-fluid bg-image-1 ">
+<br><br><br><br><br><br><br>
+    <div class="row">
+        <div class="col-md-10 col-lg-offset-1 " style="background-color:#FFFFFF;" >
 
+            <div id="" class="col-md-6 col-md-offset-3">
+
+    <!-------------- Show Topic -------------->
+
+            <?php
+                for ($x = 0; $x < 6; $x++)
+                    echo '<br>';
+
+                echo "<h1 class='text-center'>" . $review['topic'] . "</h1>";
+            ?>
     <!-------------- Show Image -------------->
-    <div class="row">
-        <div id="" class="col-md-6 col-md-offset-3">
-            <?php
-            for($x=0;$x<6;$x++)
-                echo '<br>';
-            ?>
-            <img id="" src="<?php echo $topic[1] ?>" class="img-thumbnail" width="600" height="800">
-        </div>
 
-        <!--------------- Show Weather -------------->
-        <div class="col-md-3">
-            <img class="whether" src="images/cloud.png">
-
-            <h2> 28 C</h2>
-        </div>
-    </div>
-
-
+                <img align="left" src="<?php echo $review['images'] ?>" class="img-thumbnail" width="200"  height="420">
+            </div>
+            <br><br><br><br><br>
     <!---------------- Content ------------------>
-    <div class="row">
-        <div class="col-md-10 col-lg-offset-1 " style="background-color:#777;">
             <?php
-            for($x=0;$x<4;$x++)
-                echo '<br>';
-            ?>
-
-
-            <?php
-            //<----------------********************
-            //<----------------********************
-
-            echo "<h1 class='text-center'>$topic[2]</h1>";
-
-            for($x=0;$x<20;$x++)
-            echo "$topic[4] <br>";
-
+            echo $review['detail'] . "<br>";
             ?><br>
-
-        </div>
+    <!--------------- Show Weather -------------->
+        <div class="container col-md-offset-1">
+            <?php
+                for ($x = 0; $x < 20; $x++)
+                echo '<br>';
+                $allWeather = $controller->getWeather($review['la'], $review['long'], $review['tag']);
+                $weather = json_decode($allWeather);
+                if (is_array($weather) || is_object($weather)) {
+                    foreach ($weather as $allContent) {
+                        $content = json_decode($allContent, true);
+            ?>
+            <div class="col-md-2 text-center">
+            <?php
+                if ($content['period'] == 'day') {
+                    if ($content['temp'] == 'sun') {
+            ?>
+                        <img src="images/day.png" width="60" height="60">
+                        <h5>SUNNY</h5>
+                        <?php echo $content['percent'] ?><br>
+            <?php
+                    } elseif ($content['temp'] == 'clear') {
+            ?>
+                        <img src="images/dayclear.png" width="60" height="60">
+                        <h5>CLEAR</h5>
+                        <?php echo $content['percent'] ?><br>
+            <?php
+                    } else {
+            ?>
+                        <img src="images/dayrain.png" width="60" height="60">
+                        <h5>RAINY</h5>
+                        <?php echo $content['percent'] ?><br>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    Rainy Day<span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+            <?php
+                            $i = 0;
+                            $j = 0;
+                            $arr = array();
+                            for ($i = 0; $i < strlen($content['date']); $i += 25) {
+                                $time = substr($content['date'], $i + 1, 24);
+                                $unixTime = date("U", strtotime($time));
+                                $date = gmdate("d/m/y", $unixTime);
+            ?>
+                                <li><a href="#"><?php echo $date ?></a></li>
+            <?php
+                            } 
+            ?>
+                            </ul>
+                        </div>
+            <?php   }
+                }else {
+                    if ($content['temp'] == 'clear') {
+            ?>
+                        <img src="images/nightclear.png" width="60" height="60">
+                        <h5>CLEAR NIGHT</h5>
+                        <?php echo $content['percent'] ?><br>
+            <?php
+                    } else {
+            ?>
+                        <img src="images/nightrain.png" width="60" height="60">
+                        <h5>RAINY</h5>
+                        <?php echo $content['percent'] ?><br>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                    Rainy Day
+                           <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+            <?php
+                            $i = 0;
+                            $j = 0;
+                            $arr = array();
+                            for ($i = 0; $i < strlen($content['date']); $i += 25) {
+                                $time = substr($content['date'], $i + 1, 24);
+                                $unixTime = date("U", strtotime($time));
+                                $date = gmdate("d/m/y", $unixTime);
+            ?>
+                                <li><a href="#"><?php echo $date ?></a></li>
+            <?php
+                            }
+            ?>
+                            </ul>
+                        </div>
+            <?php
+                        }
+                    }
+                    for ($x = 0; $x < 8; $x++) echo '<br>';
+            ?>
+                </div>
+            <?php
+                }
+            }
+            ?>
+            </div>
+         </div>
     </div>
-    <br><br>
+    <br><br><br><br>
 </div>
 <!-- JavaScript files placed at the end of the document so the pages load faster
-		================================================== -->
 <!-- Jquery and Bootstap core js files -->
 <script type="text/javascript" src="plugins/jquery.min.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
@@ -236,6 +289,5 @@ $topic = $arr[$id];
 
 <!-- Custom Scripts -->
 <script type="text/javascript" src="js/custom.js"></script>
-
 </body>
 </html>
