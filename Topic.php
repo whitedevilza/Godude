@@ -149,7 +149,7 @@
     <!-- ==Switch button here!!!== -->
         <div align="right">
             <form>
-                <input type="checkbox" checked data-toggle="toggle" data-on="Recently" data-off="Tag" data-onstyle="primary" data-offstyle="info" onchange="getVote(this.checked)" size="mini">
+                <input type="checkbox" checked data-toggle="toggle" data-on="Normal" data-off="Tag" data-onstyle="primary" data-offstyle="info" onchange="getVote(this.checked)" size="mini">
             </form>
         </div>
         
@@ -160,8 +160,8 @@
             <div class="col-md-12">
 
                 <!-- portfolio items start -->
+            <div id="poll">
                 <div class="isotope-container row grid-space-20"> <!-- For 1 container size 20 -->
-                    <div id="poll">
 <?php
                         $controller = new Controller;
                         $allTopic = $controller->getTopic();
